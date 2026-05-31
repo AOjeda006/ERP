@@ -389,7 +389,7 @@ esquema y los datos de prueba:
 
 ```
 bbdd/01_CREACION_BBDD.sql      # tablas, índices y estados iniciales
-bbdd/03_DATOS_PRUEBA.sql       # datos de ejemplo (proveedores, productos…)
+bbdd/02_DATOS_PRUEBA.sql       # datos de ejemplo (proveedores, productos…)
 ```
 
 ### 2. Backend (.NET 8)

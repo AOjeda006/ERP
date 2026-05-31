@@ -28,7 +28,7 @@ Container.RegisterServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hola Mundo");
+app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 
 if (app.Environment.IsDevelopment())
 {
