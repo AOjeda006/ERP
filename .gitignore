@@ -1,0 +1,39 @@
+# Dependencias
+/node_modules/
+
+# Carpetas de compilación
+/dist/
+/.angular/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Visual Studio
+.vs/
+# Compilados
+**/bin/
+**/obj/
+# Archivos de usuario de Visual Studio
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Claude Code
+.claude/
+
+# Azure / publish profiles (pueden contener subscription IDs y credenciales)
+**/PublishProfiles/
+**/ServiceDependencies/
+*.pubxml
+*.pubxml.user
+
+# Secretos locales — NO subir credenciales reales.
+# Los appsettings.json y environment.*.ts versionados solo contienen placeholders;
+# pon tus valores reales en estos archivos locales (ignorados):
+appsettings.Local.json
+**/appsettings.Local.json
+appsettings.Development.json
+**/appsettings.Development.json
+src/environments/environment.local.ts

@@ -1,0 +1,38 @@
+<!-- header.html -->
+<mat-toolbar class="topbar">
+  <div class="brand">
+    <img src="/nervion.png" alt="Nervion" class="logo-img" />
+    <div class="brand-info">
+      <span class="brand-name">
+        <span class="brand-word">NERVION'S</span>
+        <span class="brand-word brand-word--accent">SYSTEM</span>
+      </span>
+      <span class="brand-tag">ERP Enterprise</span>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <ng-container *ngIf="user$ | async as user; else anon">
+    <div class="user-card">
+      <div class="user-avatar">
+        {{ user.nombre.charAt(0).toUpperCase() }}
+      </div>
+      <div class="user-info">
+        <span class="user-name">{{ user.nombre }}</span>
+        <span class="user-mail">{{ user.email }}</span>
+      </div>
+    </div>
+
+    <button mat-stroked-button class="logout-btn" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Salir</span>
+    </button>
+  </ng-container>
+
+  <ng-template #anon>
+    <button mat-flat-button color="primary" (click)="navigateToLogin()">
+      Iniciar sesión
+    </button>
+  </ng-template>
+</mat-toolbar>

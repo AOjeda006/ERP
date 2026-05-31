@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="API/API.csproj" />
+  <Project Path="Backend.Test/Backend.Test.csproj" Id="946652d5-37b5-43a3-9b87-0048eec90118" />
+  <Project Path="Data/Data.csproj" />
+  <Project Path="DI/DI.csproj" />
+  <Project Path="Domain/Domain.csproj" />
+</Solution>

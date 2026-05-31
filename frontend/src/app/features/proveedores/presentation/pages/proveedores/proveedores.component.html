@@ -1,0 +1,67 @@
+<!-- proveedores.component.html -->
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1 class="title">Proveedores</h1>
+      <p class="subtitle">Listado de proveedores del sistema. Solo lectura.</p>
+    </div>
+    <div class="head-actions">
+      <button mat-stroked-button (click)="refresh()">
+        <mat-icon>refresh</mat-icon>
+        Actualizar
+      </button>
+    </div>
+  </div>
+
+  <mat-card class="card">
+    <div class="filters">
+      <mat-form-field appearance="outline" class="search" floatLabel="always">
+        <mat-label>Buscar proveedor</mat-label>
+        <input matInput [formControl]="search" placeholder="Razón social, CIF, email, ciudad..." />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="loading" *ngIf="vm.isLoading$ | async">Cargando proveedores...</div>
+
+    <div class="table-wrap" *ngIf="!(vm.isLoading$ | async)">
+      <table mat-table [dataSource]="(data$ | async) ?? []" class="mat-elevation-z0">
+
+        <!-- Quita la columna ubicacion y actualiza displayedColumns -->
+        <ng-container matColumnDef="razon">
+          <th mat-header-cell *matHeaderCellDef>Proveedor</th>
+          <td mat-cell *matCellDef="let p">
+            <div class="name">{{ p.razonSocial }}</div>
+            <div class="meta" *ngIf="p.nombreComercial">{{ p.nombreComercial }}</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="contacto">
+          <th mat-header-cell *matHeaderCellDef>Contacto</th>
+          <td mat-cell *matCellDef="let p">
+            <div class="meta">{{ p.email || '—' }}</div>
+            <div class="meta">{{ p.telefono || '—' }}</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef class="th-actions">Acciones</th>
+          <td mat-cell *matCellDef="let p" class="td-actions">
+            <button mat-icon-button class="icon-btn detail" (click)="onDetalles(p)" title="Ver detalles">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      <div class="empty" *ngIf="(((data$ | async) ?? []).length === 0)">
+        <mat-icon>domain</mat-icon>
+        <div class="empty-title">Sin resultados</div>
+        <div class="empty-sub">No hay proveedores que coincidan con la búsqueda.</div>
+      </div>
+    </div>
+  </mat-card>
+</div>

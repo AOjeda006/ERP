@@ -1,0 +1,18 @@
+<!-- sidebar.html -->
+<nav class="sidebar">
+
+  <div class="nav-section">Menú principal</div>
+
+  <a
+    *ngFor="let item of menuItems"
+    [routerLink]="item.route"
+    [routerLinkActiveOptions]="item.linkOptions"
+    routerLinkActive="active"
+    class="nav-item"
+  >
+    <span class="nav-icon">{{ item.icon }}</span>
+    <span>{{ item.label }}</span>
+  </a>
+
+
+</nav>

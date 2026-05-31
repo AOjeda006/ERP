@@ -1,0 +1,39 @@
+/* dashboard-layout.scss */
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 64px 1fr;
+  background: var(--clr-bg);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.body {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+}
+
+.sidebar {
+  min-height: 0;
+  background: var(--clr-sidebar);
+  border-right: 1px solid rgba(255,255,255,.05);
+  overflow-y: auto;
+}
+
+.main {
+  min-width: 0;
+  overflow: auto;
+  padding: 28px;
+  background: var(--clr-bg);
+}
+
+@media (max-width: 900px) {
+  .body { grid-template-columns: 1fr; }
+  .sidebar { border-right: none; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .main { padding: 16px; }
+}

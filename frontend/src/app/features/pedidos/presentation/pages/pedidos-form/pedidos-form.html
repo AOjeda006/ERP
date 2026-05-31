@@ -1,0 +1,167 @@
+<div class="page">
+  <div class="page-head">
+    <button mat-icon-button (click)="onCancelar()" class="btn-back">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div>
+      <h1 class="title">{{ isEditMode ? 'Editar pedido' : 'Nuevo pedido' }}</h1>
+      <p class="subtitle" *ngIf="isEditMode && pedidoId">
+        Modificando pedido #{{ pedidoId }}
+      </p>
+      <p class="subtitle" *ngIf="!isEditMode">
+        Rellena los datos y añade las líneas de producto.
+      </p>
+    </div>
+  </div>
+
+  <div class="loading-pedido" *ngIf="isLoadingPedido">
+    <mat-spinner diameter="32"></mat-spinner>
+    <span>Cargando datos del pedido...</span>
+  </div>
+
+  <form [formGroup]="form" *ngIf="!isLoadingPedido">
+
+    <!-- ── Datos generales ── -->
+    <mat-card class="section-card">
+      <div class="section-title">
+        <mat-icon>receipt_long</mat-icon>
+        Datos generales
+      </div>
+
+      <div class="fields-grid">
+
+        <mat-form-field appearance="outline" floatLabel="always" *ngIf="isEditMode">
+          <mat-label>Número de pedido</mat-label>
+          <input matInput formControlName="numeroPedido" readonly />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label>Proveedor *</mat-label>
+          <mat-select formControlName="proveedorId">
+            <mat-option *ngFor="let p of (vm.proveedores$ | async)" [value]="p.proveedorID">
+              {{ p.razonSocial }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('proveedorId')?.hasError('required')">
+            Selecciona un proveedor
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Fecha española DD/MM/YYYY, solo lectura -->
+        <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label>Fecha de pedido</mat-label>
+          <input matInput [matDatepicker]="pickerFecha" formControlName="fechaPedido" placeholder="DD/MM/AAAA" />
+          <mat-datepicker-toggle matIconSuffix [for]="pickerFecha" [disabled]="true">
+          </mat-datepicker-toggle>
+          <mat-datepicker #pickerFecha [disabled]="true"></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="span-full" floatLabel="always">
+          <mat-label>Observaciones</mat-label>
+          <input matInput formControlName="observaciones" placeholder="Notas adicionales sobre el pedido..." />
+        </mat-form-field>
+
+      </div>
+    </mat-card>
+
+    <!-- ── Líneas de producto ── -->
+    <mat-card class="section-card">
+      <div class="section-header">
+        <div class="section-title">
+          <mat-icon>list_alt</mat-icon>
+          Líneas de producto
+        </div>
+        <button mat-stroked-button type="button" (click)="_agregarLinea()" [disabled]="!form.get('proveedorId')?.value">
+          <mat-icon>add</mat-icon>
+          Añadir línea
+        </button>
+      </div>
+
+      <div class="no-lines" *ngIf="!form.get('proveedorId')?.value">
+        <mat-icon>info_outline</mat-icon>
+        <span>Selecciona un proveedor para añadir productos</span>
+      </div>
+
+      <div class="no-lines" *ngIf="form.get('proveedorId')?.value && lineas.length === 0">
+        <mat-icon>inbox</mat-icon>
+        <span>Añade al menos una línea de producto</span>
+      </div>
+
+      <div class="lineas-wrap" *ngIf="lineas.length > 0">
+
+        <!-- Cabecera: 3 columnas + hueco botón -->
+        <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 48px;
+                gap:12px; padding:0 4px 8px; font-size:11px;
+                font-weight:700; color:#64748b; text-transform:uppercase;
+                letter-spacing:.6px;">
+          <span>Producto</span>
+          <span>Cantidad</span>
+          <span>Total</span>
+          <span></span>
+        </div>
+
+        <!-- Filas -->
+        <div formArrayName="lineas" *ngFor="let linea of lineas.controls; let i = index" style="display:grid; grid-template-columns: 2fr 1fr 1fr 48px;
+                gap:12px; align-items:start; margin-bottom:4px;">
+          <ng-container [formGroupName]="i">
+
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%">
+              <mat-label>Producto *</mat-label>
+              <mat-select formControlName="productoId" (selectionChange)="onProductoChange(i)">
+                <mat-option *ngFor="let p of (vm.productos$ | async)" [value]="p.productoID">
+                  {{ p.productoNombre }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="linea.get('productoId')?.hasError('required')">
+                Selecciona un producto
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%">
+              <mat-label>Cantidad *</mat-label>
+              <input matInput type="number" formControlName="cantidad" min="1" (input)="onLineaChange(i)" />
+              <mat-error *ngIf="linea.get('cantidad')?.hasError('min')">
+                Mínimo 1
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" floatLabel="always" style="width:100%">
+              <mat-label>Total</mat-label>
+              <input matInput [value]="getSubtotal(i) | currency:'EUR'" readonly />
+            </mat-form-field>
+
+            <button mat-icon-button type="button" style="margin-top:4px;" (click)="eliminarLinea(i)"
+              [disabled]="lineas.length === 1">
+              <mat-icon>delete</mat-icon>
+            </button>
+
+          </ng-container>
+        </div>
+      </div>
+    </mat-card>
+    
+    <!-- ── Footer ── -->
+    <div class="form-footer">
+      <div class="totales">
+        <span class="total-label">Base imponible:</span>
+        <span class="total-val">{{ baseImponible | currency:'EUR' }}</span>
+        <span class="total-sep">|</span>
+        <span class="total-label grand">Total con IVA:</span>
+        <span class="total-val grand">{{ totalConIva | currency:'EUR' }}</span>
+      </div>
+
+      <div class="footer-actions">
+        <button mat-stroked-button type="button" (click)="onCancelar()">
+          Cancelar
+        </button>
+        <button mat-raised-button color="primary" type="button" [disabled]="form.invalid || (vm.isSaving$ | async)"
+          (click)="onGuardar()">
+          <mat-spinner diameter="16" *ngIf="vm.isSaving$ | async"></mat-spinner>
+          <mat-icon *ngIf="!(vm.isSaving$ | async)">save</mat-icon>
+          {{ isEditMode ? 'Guardar cambios' : 'Crear pedido' }}
+        </button>
+      </div>
+    </div>
+
+  </form>
+</div>

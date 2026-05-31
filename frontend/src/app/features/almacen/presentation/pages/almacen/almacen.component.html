@@ -1,0 +1,90 @@
+<!-- almacen.component.html -->
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1 class="title">Almacén</h1>
+      <p class="subtitle">Productos con stock recibido a través de pedidos completados.</p>
+    </div>
+    <button mat-stroked-button (click)="cargar()" class="btn-refresh">
+      <mat-icon>refresh</mat-icon>
+      Actualizar
+    </button>
+  </div>
+
+  <!-- Filtro por categoría -->
+  <div class="filters-bar">
+    <mat-form-field appearance="outline" class="filter-field" floatLabel="always">
+      <mat-label>Filtrar por categoría</mat-label>
+      <mat-select [formControl]="filterCategoria">
+        <mat-option [value]="null">Todas las categorías</mat-option>
+        <mat-option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button class="clear-btn"
+            *ngIf="filterCategoria.value !== null"
+            (click)="clearFilter()">
+      <mat-icon>clear</mat-icon>
+      Limpiar
+    </button>
+  </div>
+
+  <!-- Spinner de carga -->
+  <div class="loading" *ngIf="isLoading">
+    <mat-spinner diameter="24"></mat-spinner>
+    <span>Cargando almacén...</span>
+  </div>
+
+  <!-- Sin datos -->
+  <div class="empty" *ngIf="!isLoading && allItems.length === 0">
+    <mat-icon>inventory_2</mat-icon>
+    <div class="empty-title">Sin datos en almacén</div>
+    <div class="empty-sub">No hay pedidos recibidos o productos registrados.</div>
+  </div>
+
+  <!-- Grid de productos -->
+  <div class="productos-grid" *ngIf="!isLoading && allItems.length > 0">
+    <div
+      class="producto-card"
+      *ngFor="let item of (items$ | async)"
+      (click)="onDetalles(item)"
+      title="Ver detalles de {{ item.nombreProducto }}">
+
+      <div class="card-header">
+        <span class="cat-chip">{{ item.categoriaNombre }}</span>
+        <span class="stock-badge" [ngClass]="stockClass(item.stockRecibido)">
+          {{ item.stockRecibido }} {{ item.unidadMedida }}
+        </span>
+      </div>
+
+      <div class="card-body">
+        <div class="prod-name">{{ item.nombreProducto }}</div>
+        <div class="prod-code">{{ item.codigoProducto }}</div>
+        <div class="prod-desc" *ngIf="item.descripcion">{{ item.descripcion }}</div>
+      </div>
+
+      <div class="card-footer">
+        <div class="footer-item">
+          <span class="fi-label">Precio unit.</span>
+          <span class="fi-value">{{ item.precioUnitario | currency:'EUR' }}</span>
+        </div>
+        <div class="footer-item">
+          <span class="fi-label">Pedidos</span>
+          <span class="fi-value">{{ item.pedidosCount }}</span>
+        </div>
+        <button mat-icon-button class="btn-eye" title="Ver detalles">
+          <mat-icon>visibility</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sin resultados tras filtro -->
+    <div class="empty-filter" *ngIf="(items$ | async)?.length === 0">
+      <mat-icon>search_off</mat-icon>
+      <span>No hay productos en esta categoría.</span>
+      <button mat-stroked-button (click)="clearFilter()">
+        <mat-icon>clear</mat-icon> Limpiar filtro
+      </button>
+    </div>
+  </div>
+</div>

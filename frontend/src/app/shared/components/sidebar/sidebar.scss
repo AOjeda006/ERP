@@ -1,0 +1,151 @@
+/* sidebar.scss */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #0d1117;
+  font-family: 'Outfit', sans-serif;
+  overflow: hidden;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px 12px 24px;
+  font-family: 'Outfit', sans-serif;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Scrollbar sutil */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.1) transparent;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.1);
+    border-radius: 4px;
+  }
+}
+
+/* ── Section label ── */
+.nav-section {
+  font-family: 'Outfit', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.22);
+  padding: 0 10px;
+  margin: 0 0 6px;
+  flex-shrink: 0;
+}
+
+/* ── Nav item ── */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,.45);
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  width: 100%;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+  margin-bottom: 2px;
+  line-height: 1;
+  min-height: 42px;
+  flex-shrink: 0;
+  /* Evitar que se compriman cuando hay poco alto */
+  box-sizing: border-box;
+
+  .nav-icon {
+    font-size: 17px;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  &:hover {
+    background: rgba(255,255,255,.05);
+    color: rgba(255,255,255,.8);
+  }
+
+  &.active {
+    background: rgba(99,102,241,.14);
+    color: #a5b4fc;
+    border-color: rgba(99,102,241,.22);
+    font-weight: 700;
+  }
+}
+
+/* ────────────────────────────────────────────────
+   RESPONSIVE — cuando el sidebar es estrecho
+   o está en pantallas pequeñas
+─────────────────────────────────────────────────*/
+
+/* Sidebar en modo horizontal (mobile top bar) */
+@media (max-width: 900px) {
+  :host {
+    height: auto;
+    width: 100%;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    padding: 8px 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 4px;
+    align-items: center;
+    /* Scrollbar invisible en mobile */
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  .nav-section {
+    display: none; /* Ocultar label de sección en modo horizontal */
+  }
+
+  .nav-item {
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 14px;
+    min-height: unset;
+    min-width: 72px;
+    justify-content: center;
+    text-align: center;
+    font-size: 11px;
+    border-radius: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    width: auto;
+    margin-bottom: 0;
+
+    .nav-icon {
+      font-size: 20px;
+      width: auto;
+    }
+  }
+}
+
+/* En pantallas MUY pequeñas solo iconos */
+@media (max-width: 480px) {
+  .nav-item {
+    padding: 8px 10px;
+    min-width: 52px;
+
+    span:not(.nav-icon) {
+      display: none;
+    }
+  }
+}

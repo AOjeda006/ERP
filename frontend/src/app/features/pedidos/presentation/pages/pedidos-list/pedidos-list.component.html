@@ -1,0 +1,110 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1 class="title">Pedidos</h1>
+      <p class="subtitle">Gestión de pedidos a proveedores.</p>
+    </div>
+
+    <div class="head-right">
+      <div class="recibidos-badge" *ngIf="(vm.recibidos$ | async)?.length as cnt">
+        <mat-icon>check_circle</mat-icon>
+        {{ cnt }} recibido{{ cnt !== 1 ? 's' : '' }}
+      </div>
+      <button mat-raised-button color="primary" (click)="onCrear()">
+        <mat-icon>add</mat-icon>
+        Nuevo pedido
+      </button>
+    </div>
+  </div>
+
+  <div class="filters-bar">
+    <mat-form-field appearance="outline" class="filter-field" floatLabel="always">
+      <mat-label>Proveedor</mat-label>
+      <mat-select [formControl]="filterProveedor">
+        <mat-option [value]="null">Todos</mat-option>
+        <mat-option *ngFor="let p of proveedores$" [value]="p.proveedorID">
+          {{ p.razonSocial }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field" floatLabel="always">
+      <mat-label>Estado</mat-label>
+      <mat-select [formControl]="filterEstado">
+        <mat-option [value]="null">Todos</mat-option>
+        <mat-option *ngFor="let e of (vm.estados$ | async)" [value]="e.estadoID">
+          {{ e.nombreEstado }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button class="clear-btn"
+            *ngIf="(filterProveedor.value !== null) || (filterEstado.value !== null)"
+            (click)="clearFilters()">
+      <mat-icon>clear</mat-icon> Limpiar
+    </button>
+  </div>
+
+  <mat-card class="card">
+    <div class="loading" *ngIf="vm.isLoading$ | async">
+      <mat-spinner diameter="20"></mat-spinner>
+      <span>Cargando pedidos...</span>
+    </div>
+
+    <div class="pedidos-grid" *ngIf="!(vm.isLoading$ | async) && !(isEmpty$ | async)">
+      <div class="pedido-card" *ngFor="let pedido of (pedidosFiltrados$ | async)">
+
+        <div class="pedido-header">
+          <span class="pedido-num">{{ pedido.numeroPedido }}</span>
+
+          <mat-select
+            class="estado-select"
+            [ngClass]="chipClass(pedido.estadoNombre)"
+            [value]="pedido.estadoID"
+            (selectionChange)="onEstadoChange(pedido, $event.value)">
+            <mat-option *ngFor="let e of (vm.estados$ | async)" 
+                        [value]="e.estadoID"
+                        [disabled]="isOptionDisabled(pedido, e)">
+              {{ e.nombreEstado }}
+            </mat-option>
+          </mat-select>
+        </div>
+
+        <div class="pedido-body">
+          <div class="info-row">
+            <span class="info-label">Proveedor</span>
+            <span class="info-value">{{ pedido.proveedorNombre || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Fecha prevista</span>
+            <span class="info-value">{{ formatDate(pedido.fechaPedido) }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Subtotal</span>
+            <span class="info-value total">
+              {{ (pedido.importeTotalConIVA ?? pedido.subtotal) | currency:'EUR' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="pedido-actions">
+          <button mat-button class="btn-detail" (click)="onVerDetalles(pedido)">
+            <mat-icon>visibility</mat-icon> Ver
+          </button>
+          <button mat-button 
+                  class="btn-edit" 
+                  [disabled]="!esPendiente(pedido)"
+                  (click)="onEditar(pedido)">
+            <mat-icon>edit</mat-icon> Editar
+          </button>
+          <button mat-button 
+                  class="btn-delete" 
+                  [disabled]="!puedeEliminar(pedido)"
+                  (click)="onEliminar(pedido)">
+            <mat-icon>delete</mat-icon> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</div>

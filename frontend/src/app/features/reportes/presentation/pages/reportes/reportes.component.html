@@ -1,0 +1,36 @@
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1 class="title">Reportes</h1>
+      <p class="subtitle">Indicadores clave para el análisis del sistema.</p>
+    </div>
+  </div>
+
+  <ng-container *ngIf="vm.kpis$ | async as kpi">
+    <div class="grid">
+      <mat-card class="kpi">
+        <div class="k-label">Total pedidos</div>
+        <div class="k-value">{{ kpi.totalPedidos }}</div>
+        <div class="k-hint">Pedidos registrados</div>
+      </mat-card>
+
+      <mat-card class="kpi">
+        <div class="k-label">Importe total</div>
+        <div class="k-value">{{ kpi.totalImporte | currency:'EUR' }}</div>
+        <div class="k-hint">Suma de importes (IVA incl.)</div>
+      </mat-card>
+
+      <mat-card class="kpi">
+        <div class="k-label">Productos activos</div>
+        <div class="k-value">{{ kpi.productosActivos }}</div>
+        <div class="k-hint">Disponibles</div>
+      </mat-card>
+
+      <mat-card class="kpi">
+        <div class="k-label">Proveedores activos</div>
+        <div class="k-value">{{ kpi.proveedoresActivos }}</div>
+        <div class="k-hint">Relación comercial</div>
+      </mat-card>
+    </div>
+  </ng-container>
+</div>

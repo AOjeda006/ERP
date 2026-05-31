@@ -1,0 +1,160 @@
+/* productos.component.scss & proveedores.component.scss — shared pattern */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--clr-text);
+  letter-spacing: -.5px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--clr-muted);
+  font-weight: 400;
+  margin-top: 3px;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--clr-surface) !important;
+  border-radius: 20px !important;
+  padding: 18px !important;
+  border: 1px solid var(--clr-border) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+/* ── Filters ── */
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.search { flex: 1; }
+
+/* ── Table ── */
+.table-wrap { overflow: auto; }
+table { width: 100%; }
+
+/* Column typography */
+.pname, .name {
+  font-weight: 700;
+  color: var(--clr-text);
+  font-size: 14px;
+}
+.pdesc, .meta {
+  font-size: 12px;
+  color: var(--clr-muted);
+  margin-top: 2px;
+}
+
+/* ── Status chips ── */
+mat-chip.ok {
+  background: rgba(16,185,129,.1) !important;
+  color: #065f46 !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+}
+mat-chip.bad {
+  background: rgba(239,68,68,.1) !important;
+  color: #991b1b !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+}
+
+/* ── Loading ── */
+.loading {
+  padding: 20px;
+  color: var(--clr-muted);
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &::before {
+    content: '';
+    width: 16px; height: 16px;
+    border: 2px solid rgba(99,102,241,.2);
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Empty state ── */
+.empty {
+  padding: 40px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  mat-icon {
+    font-size: 40px;
+    width: 40px; height: 40px;
+    color: var(--clr-muted);
+    opacity: .5;
+  }
+}
+.empty-title {
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--clr-text);
+}
+.empty-sub {
+  font-size: 13px;
+  color: var(--clr-muted);
+  font-weight: 400;
+}
+
+/* ── Action buttons ── */
+.th-actions, .td-actions { width: 110px; text-align: right; }
+
+.icon-btn { opacity: .8; transition: opacity .15s; }
+.icon-btn:hover { opacity: 1; }
+.icon-btn.edit mat-icon  { color: #6366f1; }
+.icon-btn.delete mat-icon { color: #ef4444; }
+
+/* ── FAB ── */
+.fab {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  z-index: 30;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+  box-shadow: 0 8px 24px rgba(99,102,241,.45) !important;
+  transition: transform .15s ease, box-shadow .15s ease !important;
+
+  &:hover {
+    transform: scale(1.06);
+    box-shadow: 0 12px 32px rgba(99,102,241,.6) !important;
+  }
+}
+
+/* ── Head actions button ── */
+.head-actions button {
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+}
